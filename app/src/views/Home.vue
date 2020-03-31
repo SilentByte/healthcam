@@ -4,7 +4,7 @@
 -->
 
 <template>
-    <div class="home">
+    <div>
         HomeView
     </div>
 </template>

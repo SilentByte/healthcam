@@ -8,7 +8,7 @@ export type PerimeterStatus = "alert" | "suspicious" | "clear";
 export interface ICamera {
     id: string;
     name: string;
-    location: [number, number];
-    latestPhotoUrl: string;
-    latestPhotoDateTime: Date;
+    coordinates: [number, number];
+    latestPhotoUrl?: string;
+    latestPhotoDateTime?: Date;
 }

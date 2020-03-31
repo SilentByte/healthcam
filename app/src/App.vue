@@ -38,7 +38,9 @@
                              v-model="drawer">
             <v-layout column fill-height>
                 <v-list nav dense>
-                    <v-list-item link exact :to="{ name: 'HomeView' }">
+                    <v-list-item link exact
+                                 color="primary"
+                                 :to="{ name: 'HomeView' }">
                         <v-list-item-icon>
                             <v-icon color="primary">mdi-map-marker</v-icon>
                         </v-list-item-icon>
@@ -47,7 +49,9 @@
                         </v-list-item-content>
                     </v-list-item>
 
-                    <v-list-item link exact :to="{ name: 'CameraView' }">
+                    <v-list-item link exact
+                                 color="primary"
+                                 :to="{ name: 'CameraView' }">
                         <v-list-item-icon>
                             <v-icon color="primary">mdi-cctv</v-icon>
                         </v-list-item-icon>
@@ -56,7 +60,9 @@
                         </v-list-item-content>
                     </v-list-item>
 
-                    <v-list-item link :to="{ name: 'AboutView' }">
+                    <v-list-item link exact
+                                 color="primary"
+                                 :to="{ name: 'AboutView' }">
                         <v-list-item-icon>
                             <v-icon color="primary">mdi-information</v-icon>
                         </v-list-item-icon>
