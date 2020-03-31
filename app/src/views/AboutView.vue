@@ -5,6 +5,12 @@
 
 <template>
     <div>
-        About
+        AboutView
     </div>
 </template>
+
+<script lang="ts">
+    export default {
+        name: "AboutView",
+    };
+</script>

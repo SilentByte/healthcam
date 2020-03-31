@@ -5,12 +5,12 @@
 
 <template>
     <div class="home">
-        HomeView
+        CameraView
     </div>
 </template>
 
 <script lang="ts">
     export default {
-        name: "HomeView",
+        name: "CameraView",
     };
 </script>
