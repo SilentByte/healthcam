@@ -14,17 +14,10 @@ export interface IActivity {
     photoUrl: string;
 }
 
-export interface ICameraStats {
+export interface ICamera {
     id: string;
     name: string;
     state: CameraState
-    compliantCount: number;
-    violationCount: number;
-    overrideCount: number;
-}
-
-export interface IStats {
-    cameras: ICameraStats[];
     compliantCount: number;
     violationCount: number;
     overrideCount: number;

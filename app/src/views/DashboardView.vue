@@ -40,7 +40,7 @@
                         Cameras
                     </v-card-title>
                     <v-list dense>
-                        <v-list-item v-for="cam in stats.cameras"
+                        <v-list-item v-for="cam in cameras"
                                      :key="cam.id">
                             <v-list-item-icon>
                                 <v-icon :color="cam.state === 'online' ? 'success' : 'error'">
@@ -107,7 +107,15 @@
     @Component
     export default class DashboardView extends Vue {
         get stats() {
-            return app.stats;
+            return {
+                compliantCount: this.cameras.reduce((acc, cam) => acc + cam.compliantCount, 0),
+                violationCount: this.cameras.reduce((acc, cam) => acc + cam.violationCount, 0),
+                overrideCount: this.cameras.reduce((acc, cam) => acc + cam.overrideCount, 0),
+            };
+        }
+
+        get cameras() {
+            return app.cameras;
         }
     }
 </script>

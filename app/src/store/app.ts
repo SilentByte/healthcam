@@ -12,7 +12,7 @@ import store from "@/store";
 
 import {
     IActivity,
-    IStats,
+    ICamera,
 } from "@/store/models";
 
 @Module({
@@ -46,29 +46,24 @@ export class AppModule extends VuexModule {
         },
     ];
 
-    stats: IStats = {
-        cameras: [
-            {
-                id: "icu-north",
-                name: "ICU Entrance North",
-                state: "online",
-                compliantCount: 0,
-                violationCount: 0,
-                overrideCount: 0,
-            },
-            {
-                id: "er-east",
-                name: "ER East",
-                state: "offline",
-                compliantCount: 0,
-                violationCount: 0,
-                overrideCount: 0,
-            },
-        ],
-        compliantCount: 0,
-        violationCount: 0,
-        overrideCount: 0,
-    };
+    cameras: ICamera[] = [
+        {
+            id: "icu-north",
+            name: "ICU Entrance North",
+            state: "online",
+            compliantCount: 0,
+            violationCount: 0,
+            overrideCount: 0,
+        },
+        {
+            id: "er-east",
+            name: "ER East",
+            state: "offline",
+            compliantCount: 0,
+            violationCount: 0,
+            overrideCount: 0,
+        },
+    ];
 
     get hasViolation() {
         return this.activities.some(a => a.type === "violation");
