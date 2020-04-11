@@ -3,12 +3,12 @@
  * Copyright (c) 2020 by SilentByte <https://www.silentbyte.com/>
  */
 
-export type PerimeterStatus = "alert" | "suspicious" | "clear";
+export type ActivityType = "compliant" | "violation" | "override";
 
-export interface ICamera {
+export interface IActivity {
     id: string;
-    name: string;
-    coordinates: [number, number];
-    latestPhotoUrl?: string;
-    latestPhotoDateTime?: Date;
+    type: ActivityType;
+    timestamp: Date;
+    camera: string;
+    photoUrl: string;
 }

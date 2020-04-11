@@ -11,8 +11,7 @@ import {
 import store from "@/store";
 
 import {
-    ICamera,
-    PerimeterStatus,
+    IActivity,
 } from "@/store/models";
 
 @Module({
@@ -22,29 +21,31 @@ import {
     name: "app",
 })
 export class AppModule extends VuexModule {
-    perimeterStatus: PerimeterStatus = "clear";
-
-    cameras: ICamera[] = [
+    activities: IActivity[] = [
         {
             id: "1",
-            name: "Cam01",
-            coordinates: [0, 0],
-            latestPhotoUrl: "https://picsum.photos/seed/1/500/500",
-            latestPhotoDateTime: new Date(),
+            type: "compliant",
+            timestamp: new Date(),
+            camera: "ICU Entrance North",
+            photoUrl: "https://picsum.photos/seed/1/500/500",
         },
         {
             id: "2",
-            name: "Cam02",
-            coordinates: [0, 0],
-            latestPhotoUrl: "https://picsum.photos/seed/2/500/500",
-            latestPhotoDateTime: new Date(),
+            type: "violation",
+            timestamp: new Date(),
+            camera: "ICU Entrance West",
+            photoUrl: "https://picsum.photos/seed/2/500/500",
         },
         {
             id: "3",
-            name: "Cam03",
-            coordinates: [0, 0],
-            latestPhotoUrl: "https://picsum.photos/seed/3/500/500",
-            latestPhotoDateTime: new Date(),
+            type: "override",
+            timestamp: new Date(),
+            camera: "ER East",
+            photoUrl: "https://picsum.photos/seed/3/500/500",
         },
     ];
+
+    get hasViolation() {
+        return this.activities.some(a => a.type === "violation");
+    }
 }

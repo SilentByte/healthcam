@@ -5,37 +5,47 @@
 
 <!--suppress HtmlUnknownTarget -->
 <template>
-    <v-container>
+    <v-container pa-5 style="max-width: 720px">
         <v-layout wrap>
-            <v-flex v-for="cam in cameras"
-                    :key="cam.id"
+            <v-flex v-for="activity in activities"
+                    :key="activity.id"
                     class="align-center justify-center"
                     xs12 mb-2 mb-sm-4>
                 <v-card class="align-center justify-center align-self-center">
                     <div class="d-flex flex-no-wrap">
                         <v-avatar tile
-                                  size="200"
+                                  :size="calculatePreviewSize"
                                   class="ma-2 ma-sm-4">
-                            <v-img v-if="cam.latestPhotoUrl" :src="cam.latestPhotoUrl"></v-img>
-                            <v-icon v-else x-large>mdi-image-off</v-icon>
+                            <v-img :src="activity.photoUrl" />
                         </v-avatar>
-                        <div>
-                            <v-card-title class="headline">
-                                {{ cam.name }}
-                            </v-card-title>
-                            <v-card-subtitle v-if="cam.latestPhotoDateTime" class="pb-1 caption">
-                                <div>
-                                    <v-icon x-small>mdi-calendar-clock</v-icon>
-                                    {{ cam.latestPhotoDateTime.toLocaleString() }}
-                                </div>
 
-                                <div class="mr-2">
-                                    <v-icon x-small>mdi-map-marker-radius</v-icon>
-                                    {{ cam.coordinates[0].toFixed(6) }},
-                                    {{ cam.coordinates[1].toFixed(6) }}
-                                </div>
-                            </v-card-subtitle>
-                        </div>
+                        <v-layout row>
+                            <v-flex xs12 sm8>
+                                <v-card-title class="headline">
+                                    {{ activity.camera }}
+                                </v-card-title>
+                                <v-card-subtitle class="pb-1 caption">
+                                    <div>
+                                        <v-icon x-small>mdi-calendar-clock</v-icon>
+                                        {{ activity.timestamp.toLocaleString() }}
+                                    </div>
+                                </v-card-subtitle>
+                            </v-flex>
+                            <v-flex ma-5>
+                                <v-layout column align-end>
+                                    <v-chip class="mr-2 text-uppercase"
+                                            :color="formatActivityType(activity).color">
+                                        <v-avatar left>
+                                            <v-icon>{{formatActivityType(activity).icon}}</v-icon>
+                                        </v-avatar>
+                                        {{ formatActivityType(activity).text }}
+                                    </v-chip>
+                                    <v-flex my-5 pt-5 mr-4>
+                                        <v-btn  color="primary">Confirm</v-btn>
+                                    </v-flex>
+                                </v-layout>
+                            </v-flex>
+                        </v-layout>
                     </div>
                 </v-card>
             </v-flex>
@@ -51,14 +61,42 @@
 
     import { getModule } from "vuex-module-decorators";
 
+    import { IActivity } from "@/store/models";
+
     import { AppModule } from "@/store/app";
 
     const app = getModule(AppModule);
 
     @Component
     export default class CameraView extends Vue {
-        get cameras() {
-            return app.cameras;
+        get activities() {
+            return app.activities;
+        }
+
+        get calculatePreviewSize() {
+            return this.$vuetify.breakpoint.xs ? 80
+                : this.$vuetify.breakpoint.sm ? 100
+                    : 140;
+        }
+
+        formatActivityType(activity: IActivity) {
+            return {
+                "compliant": {
+                    text: "Compliant",
+                    color: "success",
+                    icon: "mdi-checkbox-marked-circle",
+                },
+                "violation": {
+                    text: "Violation",
+                    color: "error",
+                    icon: "mdi-alert-octagon",
+                },
+                "override": {
+                    text: "Override",
+                    color: "warning",
+                    icon: "mdi-alert-circle",
+                },
+            }[activity.type];
         }
     }
 </script>
