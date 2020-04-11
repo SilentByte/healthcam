@@ -82,10 +82,10 @@
             <v-flex xs12 sm12 class="mt-4">
                 <v-card class="mx-2 pa-8 text-center fill-height">
                     <div class="pt-4 title text-center">
-                        Chart
+                        Detection / Rates
                     </div>
                     <v-card-text>
-                        TODO
+                        <canvas ref="chart" />
                     </v-card-text>
                 </v-card>
             </v-flex>
@@ -93,11 +93,11 @@
     </v-container>
 </template>
 
+<!--suppress JSUnusedGlobalSymbols -->
 <script lang="ts">
-    import {
-        Component,
-        Vue,
-    } from "vue-property-decorator";
+    import { Component, Vue } from "vue-property-decorator";
+
+    import { Chart } from "chart.js";
 
     import { getModule } from "vuex-module-decorators";
     import { AppModule } from "@/store/app";
@@ -106,6 +106,8 @@
 
     @Component
     export default class DashboardView extends Vue {
+        chart: Chart | null = null;
+
         get stats() {
             return {
                 compliantCount: this.cameras.reduce((acc, cam) => acc + cam.compliantCount, 0),
@@ -116,6 +118,66 @@
 
         get cameras() {
             return app.cameras;
+        }
+
+        mounted() {
+            const context = (this.$refs.chart as HTMLCanvasElement).getContext("2d") as CanvasRenderingContext2D;
+            this.chart = new Chart(context, {
+                type: "bar",
+                data: {
+                    labels: [
+                        "January", "February", "March", "April", "May", "June",
+                        "July", "August", "September", "October", "November", "December",
+                    ],
+                    datasets: [{
+                        label: "Rates",
+                        type: "line",
+                        data: app.activityHistory.rates,
+                        yAxisID: "rates",
+                        fill: false,
+                        backgroundColor: "#ba68c8",
+                        borderColor: "#ba68c8",
+                    }, {
+                        label: "Detections",
+                        data: app.activityHistory.detections,
+                        yAxisID: "detections",
+                        backgroundColor: "#e1bee7",
+                    }],
+                },
+                options: {
+                    responsive: true,
+                    tooltips: {
+                        mode: "index",
+                        intersect: true,
+                    },
+                    scales: {
+                        yAxes: [{
+                            type: "linear",
+                            display: true,
+                            position: "left",
+                            id: "detections",
+                            gridLines: {
+                                drawOnChartArea: false,
+                            },
+                        }, {
+                            type: "linear",
+                            display: true,
+                            position: "right",
+                            id: "rates",
+                            gridLines: {
+                                drawOnChartArea: false,
+                            },
+                        }],
+                    },
+                },
+            });
+        }
+
+        destroyed() {
+            if(this.chart) {
+                this.chart.destroy();
+                this.chart = null;
+            }
         }
     }
 </script>

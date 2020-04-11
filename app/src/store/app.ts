@@ -12,6 +12,7 @@ import store from "@/store";
 
 import {
     IActivity,
+    IActivityHistory,
     ICamera,
 } from "@/store/models";
 
@@ -45,6 +46,11 @@ export class AppModule extends VuexModule {
             photoUrl: "https://picsum.photos/seed/3/500/500",
         },
     ];
+
+    activityHistory: IActivityHistory = {
+        detections: [10, 15, 16, 18, 12, 8, 4, 6, 4, 8, 11, 12],
+        rates: [5, 4, 2, 0, -2, -3, -8, -2, 4, 10, 8, 9],
+    };
 
     cameras: ICamera[] = [
         {

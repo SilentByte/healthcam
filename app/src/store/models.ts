@@ -14,6 +14,11 @@ export interface IActivity {
     photoUrl: string;
 }
 
+export interface IActivityHistory {
+    detections: number[];
+    rates: number[];
+}
+
 export interface ICamera {
     id: string;
     name: string;
