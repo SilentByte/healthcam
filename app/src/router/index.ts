@@ -5,15 +5,15 @@
 
 import Vue from "vue";
 import VueRouter from "vue-router";
-import HomeView from "@/views/Home.vue";
+import DashboardView from "@/views/DashboardView.vue";
 
 Vue.use(VueRouter);
 
 const routes = [
     {
         path: "/",
-        name: "HomeView",
-        component: HomeView,
+        name: "DashboardView",
+        component: DashboardView,
     },
     {
         path: "/cameras",

@@ -12,6 +12,7 @@ import store from "@/store";
 
 import {
     IActivity,
+    IStats,
 } from "@/store/models";
 
 @Module({
@@ -33,7 +34,7 @@ export class AppModule extends VuexModule {
             id: "2",
             type: "violation",
             timestamp: new Date(),
-            camera: "ICU Entrance West",
+            camera: "ICU Entrance North",
             photoUrl: "https://picsum.photos/seed/2/500/500",
         },
         {
@@ -44,6 +45,30 @@ export class AppModule extends VuexModule {
             photoUrl: "https://picsum.photos/seed/3/500/500",
         },
     ];
+
+    stats: IStats = {
+        cameras: [
+            {
+                id: "icu-north",
+                name: "ICU Entrance North",
+                state: "online",
+                compliantCount: 0,
+                violationCount: 0,
+                overrideCount: 0,
+            },
+            {
+                id: "er-east",
+                name: "ER East",
+                state: "offline",
+                compliantCount: 0,
+                violationCount: 0,
+                overrideCount: 0,
+            },
+        ],
+        compliantCount: 0,
+        violationCount: 0,
+        overrideCount: 0,
+    };
 
     get hasViolation() {
         return this.activities.some(a => a.type === "violation");

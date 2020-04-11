@@ -43,7 +43,7 @@
                 <v-list nav dense>
                     <v-list-item link exact
                                  color="primary"
-                                 :to="{ name: 'HomeView' }">
+                                 :to="{ name: 'DashboardView' }">
                         <v-list-item-icon>
                             <v-icon color="primary">mdi-monitor-dashboard</v-icon>
                         </v-list-item-icon>
