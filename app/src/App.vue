@@ -101,7 +101,9 @@
         </v-navigation-drawer>
 
         <v-content>
-            <router-view />
+            <keep-alive>
+                <router-view />
+            </keep-alive>
         </v-content>
     </v-app>
 </template>
