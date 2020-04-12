@@ -80,7 +80,7 @@
             </v-flex>
 
             <v-flex xs12 sm12 class="mt-4">
-                <v-card class="mx-2 pa-8 text-center fill-height">
+                <v-card class="mx-2">
                     <div class="pt-4 title text-center">
                         Detection / Rates
                     </div>
