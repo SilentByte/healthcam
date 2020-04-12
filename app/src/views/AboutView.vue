@@ -123,10 +123,21 @@
     </v-container>
 </template>
 
+<!--suppress JSUnusedGlobalSymbols -->
 <script lang="ts">
-    export default {
-        name: "AboutView",
-    };
+    import {
+        Component,
+        Vue,
+    } from "vue-property-decorator";
+
+    @Component
+    export default class AboutView extends Vue {
+        mounted() {
+            this.$nextTick(() => {
+                (window as any).twttr.widgets.load();
+            });
+        }
+    }
 </script>
 
 
