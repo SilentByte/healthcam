@@ -68,7 +68,7 @@
     const app = getModule(AppModule);
 
     @Component
-    export default class CameraView extends Vue {
+    export default class ActivityLogView extends Vue {
         get activities() {
             return app.activities;
         }

@@ -25,7 +25,7 @@
 
             <v-spacer />
 
-            <v-btn large rounded text :to="{ name: 'CameraView' }">
+            <v-btn large rounded text :to="{ name: 'ActivityLogView.vue' }">
                 <template v-if="!hasViolation">
                     <v-icon class="pl-4 pr-2" left large>mdi-check</v-icon>
                     <div class="ml-2">Clear</div>
@@ -54,7 +54,7 @@
 
                     <v-list-item link exact
                                  color="primary"
-                                 :to="{ name: 'CameraView' }">
+                                 :to="{ name: 'ActivityLogView.vue' }">
                         <v-list-item-icon>
                             <v-icon color="primary">mdi-cctv</v-icon>
                         </v-list-item-icon>

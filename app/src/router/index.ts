@@ -16,9 +16,9 @@ const routes = [
         component: DashboardView,
     },
     {
-        path: "/cameras",
-        name: "CameraView",
-        component: () => import(/* webpackChunkName: "cameras" */ "@/views/CameraView.vue"),
+        path: "/activity-log",
+        name: "ActivityLogView.vue",
+        component: () => import(/* webpackChunkName: "activity-log" */ "@/views/ActivityLogView.vue"),
     },
     {
         path: "/about",
