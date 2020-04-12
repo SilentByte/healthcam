@@ -11,10 +11,10 @@
 
             <v-app-bar-nav-icon @click="drawer = !drawer" />
 
-            <v-avatar color="white" size="32">
-                <v-icon v-if="!$vuetify.breakpoint.xs"
-                        large
-                        color="primary">
+            <v-avatar v-if="!$vuetify.breakpoint.xs"
+                      color="white"
+                      size="32">
+                <v-icon large color="primary">
                     mdi-hospital
                 </v-icon>
             </v-avatar>
