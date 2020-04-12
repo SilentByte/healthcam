@@ -5,7 +5,13 @@
 
 <!--suppress HtmlUnknownTarget -->
 <template>
-    <v-container pa-5 style="max-width: 720px">
+    <v-container v-if="activities.length===0"
+                 fill-height>
+        <v-flex class="text-center display-1 align-self-center text--disabled">
+            There are no current activities
+        </v-flex>
+    </v-container>
+    <v-container v-else pa-5 style="max-width: 720px">
         <v-layout wrap>
             <v-flex v-for="activity in activities"
                     :key="activity.id"
@@ -41,7 +47,9 @@
                                         {{ formatActivityType(activity).text }}
                                     </v-chip>
                                     <v-flex my-5 pt-5 mr-4>
-                                        <v-btn small color="primary">
+                                        <v-btn small color="primary"
+                                               :loading="!!pendingConfirmations[activity.id]"
+                                               @click="onConfirmActivity(activity)">
                                             Confirm
                                         </v-btn>
                                     </v-flex>
@@ -71,6 +79,8 @@
 
     @Component
     export default class ActivityLogView extends Vue {
+        pendingConfirmations: { [key: string]: boolean } = {};
+
         get activities() {
             return app.activities;
         }
@@ -99,6 +109,15 @@
                     icon: "mdi-alert-circle",
                 },
             }[activity.type];
+        }
+
+        async onConfirmActivity(activity: IActivity) {
+            try {
+                this.$set(this.pendingConfirmations, activity.id, true);
+                await app.doConfirmActivity({activityId: activity.id});
+            } finally {
+                this.$delete(this.pendingConfirmations, activity.id);
+            }
         }
     }
 </script>

@@ -6,6 +6,8 @@
 import {
     VuexModule,
     Module,
+    Mutation,
+    Action,
 } from "vuex-module-decorators";
 
 import store from "@/store";
@@ -73,5 +75,20 @@ export class AppModule extends VuexModule {
 
     get hasViolation() {
         return this.activities.some(a => a.type === "violation");
+    }
+
+    @Mutation
+    deleteActivity(payload: { activityId: string }) {
+        this.activities = this.activities.filter(a => a.id !== payload.activityId);
+    }
+
+    @Action({rawError: true})
+    async doConfirmActivity(payload: { activityId: string }) {
+        // TODO: Implement API call.
+        await new Promise(function(resolve) {
+            setTimeout(resolve.bind(null, () => null), 1000);
+        });
+
+        this.deleteActivity({activityId: payload.activityId});
     }
 }

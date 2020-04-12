@@ -28,7 +28,7 @@
             <v-btn large rounded text :to="{ name: 'ActivityLogView.vue' }">
                 <template v-if="!hasViolation">
                     <v-icon class="pl-4 pr-2" left large>mdi-check</v-icon>
-                    <div class="ml-2">Clear</div>
+                    <div class="ml-2">Compliant</div>
                 </template>
                 <template v-else>
                     <v-icon class="pl-5 pr-2" left large>mdi-alert-octagon</v-icon>
