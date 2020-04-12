@@ -1,0 +1,23 @@
+{
+    "dev": {
+        "awscloudformation": {
+            "AuthRoleName": "amplify-healthcam-dev-121724-authRole",
+            "UnauthRoleArn": "arn:aws:iam::323863099601:role/amplify-healthcam-dev-121724-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::323863099601:role/amplify-healthcam-dev-121724-authRole",
+            "Region": "us-east-1",
+            "DeploymentBucketName": "amplify-healthcam-dev-121724-deployment",
+            "UnauthRoleName": "amplify-healthcam-dev-121724-unauthRole",
+            "StackName": "amplify-healthcam-dev-121724",
+            "StackId": "arn:aws:cloudformation:us-east-1:323863099601:stack/amplify-healthcam-dev-121724/85ea8050-7c74-11ea-a42a-0ed2247e0ea9",
+            "AmplifyAppId": "d344jg2l240h59"
+        },
+        "categories": {
+            "hosting": {
+                "amplifyhosting": {
+                    "appId": "d344jg2l240h59",
+                    "type": "manual"
+                }
+            }
+        }
+    }
+}
