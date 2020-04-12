@@ -41,7 +41,9 @@
                                         {{ formatActivityType(activity).text }}
                                     </v-chip>
                                     <v-flex my-5 pt-5 mr-4>
-                                        <v-btn  color="primary">Confirm</v-btn>
+                                        <v-btn small color="primary">
+                                            Confirm
+                                        </v-btn>
                                     </v-flex>
                                 </v-layout>
                             </v-flex>
