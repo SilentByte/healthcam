@@ -28,29 +28,12 @@ import {
 export class AppModule extends VuexModule {
     activities: IActivity[] = [];
 
-    activityHistory: IActivityHistory = {
-        detections: [10, 15, 16, 18, 12, 8, 4, 6, 4, 8, 11, 12],
-        rates: [5, 4, 2, 0, -2, -3, -8, -2, 4, 10, 8, 9],
-    };
+    cameras: ICamera[] = [];
 
-    cameras: ICamera[] = [
-        {
-            id: "icu-north",
-            name: "ICU Entrance North",
-            state: "online",
-            compliantCount: 0,
-            violationCount: 0,
-            overrideCount: 0,
-        },
-        {
-            id: "er-east",
-            name: "ER East",
-            state: "offline",
-            compliantCount: 0,
-            violationCount: 0,
-            overrideCount: 0,
-        },
-    ];
+    activityHistory: IActivityHistory = {
+        detections: [],
+        rates: [],
+    };
 
     get hasViolation() {
         return this.activities.some(a => a.type === "violation");
@@ -64,6 +47,12 @@ export class AppModule extends VuexModule {
     @Mutation
     deleteActivity(payload: { activityId: string }) {
         this.activities = this.activities.filter(a => a.id !== payload.activityId);
+    }
+
+    @Mutation
+    setStats(payload: { cameras: ICamera[]; activityHistory: IActivityHistory }) {
+        this.cameras = payload.cameras;
+        this.activityHistory = payload.activityHistory;
     }
 
     @Action({rawError: true})
@@ -89,5 +78,14 @@ export class AppModule extends VuexModule {
         });
 
         this.deleteActivity({activityId: payload.activityId});
+    }
+
+    @Action({rawError: true})
+    async doFetchStats() {
+        const result = await axios.get(`${process.env.VUE_APP_API_URL}/stats`);
+        this.setStats({
+            cameras: result.data.cameras,
+            activityHistory: result.data.activityHistory,
+        });
     }
 }

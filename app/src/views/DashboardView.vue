@@ -5,8 +5,12 @@
 
 <!--suppress HtmlUnknownTarget -->
 <template>
-    <v-container style="max-width: 1000px">
-        <v-layout wrap>
+    <v-container fill-height style="max-width: 1000px">
+        <v-flex v-show="pending" class="text-center align-self-center">
+            <v-progress-circular indeterminate
+                                 color="primary" />
+        </v-flex>
+        <v-layout v-show="!pending" wrap>
             <v-flex xs12 sm6>
                 <v-card class="mx-2 pa-8 text-center fill-height">
                     <div class="pt-4 title text-center">
@@ -95,7 +99,11 @@
 
 <!--suppress JSUnusedGlobalSymbols -->
 <script lang="ts">
-    import { Component, Vue } from "vue-property-decorator";
+    import {
+        Component,
+        Vue,
+        Watch,
+    } from "vue-property-decorator";
 
     import { Chart } from "chart.js";
 
@@ -106,6 +114,7 @@
 
     @Component
     export default class DashboardView extends Vue {
+        pending = false;
         chart: Chart | null = null;
 
         get stats() {
@@ -120,7 +129,7 @@
             return app.cameras;
         }
 
-        mounted() {
+        initChart() {
             const context = (this.$refs.chart as HTMLCanvasElement).getContext("2d") as CanvasRenderingContext2D;
             this.chart = new Chart(context, {
                 type: "bar",
@@ -171,6 +180,26 @@
                     },
                 },
             });
+        }
+
+        @Watch("stats")
+        onStatsChanged() {
+            if(this?.chart?.data?.datasets) {
+                this.chart.data.datasets[0].data = app.activityHistory.rates;
+                this.chart.data.datasets[1].data = app.activityHistory.detections;
+                this.chart.update();
+            }
+        }
+
+        async mounted() {
+            this.initChart();
+
+            try {
+                this.pending = true;
+                await app.doFetchStats();
+            } finally {
+                this.pending = false;
+            }
         }
 
         destroyed() {
