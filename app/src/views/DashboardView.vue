@@ -86,7 +86,7 @@
             <v-flex xs12 sm12 class="mt-4">
                 <v-card class="mx-2">
                     <div class="pt-4 title text-center">
-                        Detection / Rates
+                        This Week
                     </div>
                     <v-card-text>
                         <canvas ref="chart" />
@@ -129,29 +129,45 @@
             return app.cameras;
         }
 
+        get weekDayNames() {
+            const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            const today = new Date().getDay();
+            const days = [];
+
+            for(let i = 0; i < 7; i++) {
+                let day = today - i;
+                if(day < 0) {
+                    day = 7 + day;
+                }
+                days.push(weekdays[day]);
+            }
+
+            return days.reverse();
+        }
+
         initChart() {
             const context = (this.$refs.chart as HTMLCanvasElement).getContext("2d") as CanvasRenderingContext2D;
             this.chart = new Chart(context, {
                 type: "bar",
                 data: {
-                    labels: [
-                        "January", "February", "March", "April", "May", "June",
-                        "July", "August", "September", "October", "November", "December",
+                    labels: this.weekDayNames,
+                    datasets: [
+                        {
+                            label: "Compliant",
+                            data: app.activityHistory.compliant,
+                            backgroundColor: "#4caf50",
+                        },
+                        {
+                            label: "Violation",
+                            data: app.activityHistory.violation,
+                            backgroundColor: "#ff5252",
+                        },
+                        {
+                            label: "Override",
+                            data: app.activityHistory.override,
+                            backgroundColor: "#f57c00",
+                        },
                     ],
-                    datasets: [{
-                        label: "Rates",
-                        type: "line",
-                        data: app.activityHistory.rates,
-                        yAxisID: "rates",
-                        fill: false,
-                        backgroundColor: "#ba68c8",
-                        borderColor: "#ba68c8",
-                    }, {
-                        label: "Detections",
-                        data: app.activityHistory.detections,
-                        yAxisID: "detections",
-                        backgroundColor: "#e1bee7",
-                    }],
                 },
                 options: {
                     responsive: true,
@@ -160,22 +176,11 @@
                         intersect: true,
                     },
                     scales: {
+                        xAxes: [{
+                            stacked: true,
+                        }],
                         yAxes: [{
-                            type: "linear",
-                            display: true,
-                            position: "left",
-                            id: "detections",
-                            gridLines: {
-                                drawOnChartArea: false,
-                            },
-                        }, {
-                            type: "linear",
-                            display: true,
-                            position: "right",
-                            id: "rates",
-                            gridLines: {
-                                drawOnChartArea: false,
-                            },
+                            stacked: true,
                         }],
                     },
                 },
@@ -185,8 +190,9 @@
         @Watch("stats")
         onStatsChanged() {
             if(this?.chart?.data?.datasets) {
-                this.chart.data.datasets[0].data = app.activityHistory.rates;
-                this.chart.data.datasets[1].data = app.activityHistory.detections;
+                this.chart.data.datasets[0].data = app.activityHistory.compliant;
+                this.chart.data.datasets[1].data = app.activityHistory.violation;
+                this.chart.data.datasets[2].data = app.activityHistory.override;
                 this.chart.update();
             }
         }

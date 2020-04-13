@@ -17,8 +17,9 @@ export interface IActivity {
 }
 
 export interface IActivityHistory {
-    detections: number[];
-    rates: number[];
+    compliant: number[];
+    violation: number[];
+    override: number[];
 }
 
 export interface ICamera {

@@ -14,10 +14,16 @@ import axios from "axios";
 import store from "@/store";
 
 import {
+    CameraState,
     IActivity,
     IActivityHistory,
     ICamera,
 } from "@/store/models";
+
+function cameraStateFromPingTimestamp(timestamp: Date): CameraState {
+    return new Date().getTime() - timestamp.getTime() > 60 * 1000
+        ? "offline" : "online";
+}
 
 @Module({
     store,
@@ -31,8 +37,9 @@ export class AppModule extends VuexModule {
     cameras: ICamera[] = [];
 
     activityHistory: IActivityHistory = {
-        detections: [],
-        rates: [],
+        compliant: [],
+        violation: [],
+        override: [],
     };
 
     get hasViolation() {
@@ -84,7 +91,14 @@ export class AppModule extends VuexModule {
     async doFetchStats() {
         const result = await axios.get(`${process.env.VUE_APP_API_URL}/stats`);
         this.setStats({
-            cameras: result.data.cameras,
+            cameras: result.data.cameras.map((c: any): ICamera => ({
+                id: c.id,
+                name: c.deviceName,
+                state: cameraStateFromPingTimestamp(new Date(c.pingedOn)),
+                compliantCount: c.compliantCount,
+                violationCount: c.violationCount,
+                overrideCount: c.overrideCount,
+            })),
             activityHistory: result.data.activityHistory,
         });
     }
