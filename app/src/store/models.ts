@@ -12,6 +12,8 @@ export interface IActivity {
     timestamp: Date;
     camera: string;
     photoUrl: string;
+    minConfidence: number;
+    peopleInFrame: number;
 }
 
 export interface IActivityHistory {

@@ -10,6 +10,7 @@ import {
     Action,
 } from "vuex-module-decorators";
 
+import axios from "axios";
 import store from "@/store";
 
 import {
@@ -25,29 +26,7 @@ import {
     name: "app",
 })
 export class AppModule extends VuexModule {
-    activities: IActivity[] = [
-        {
-            id: "1",
-            type: "compliant",
-            timestamp: new Date(),
-            camera: "ICU Entrance North",
-            photoUrl: "https://picsum.photos/seed/1/500/500",
-        },
-        {
-            id: "2",
-            type: "violation",
-            timestamp: new Date(),
-            camera: "ICU Entrance North",
-            photoUrl: "https://picsum.photos/seed/2/500/500",
-        },
-        {
-            id: "3",
-            type: "override",
-            timestamp: new Date(),
-            camera: "ER East",
-            photoUrl: "https://picsum.photos/seed/3/500/500",
-        },
-    ];
+    activities: IActivity[] = [];
 
     activityHistory: IActivityHistory = {
         detections: [10, 15, 16, 18, 12, 8, 4, 6, 4, 8, 11, 12],
@@ -78,8 +57,30 @@ export class AppModule extends VuexModule {
     }
 
     @Mutation
+    setActivities(payload: { activities: IActivity[] }) {
+        this.activities = payload.activities;
+    }
+
+    @Mutation
     deleteActivity(payload: { activityId: string }) {
         this.activities = this.activities.filter(a => a.id !== payload.activityId);
+    }
+
+    @Action({rawError: true})
+    async doFetchActivities() {
+        const result = await axios.get(`${process.env.VUE_APP_API_URL}/activities`);
+
+        const activities = result.data.map((a: any): IActivity => ({
+            id: a.id,
+            type: a.type,
+            timestamp: new Date(a.timestamp),
+            camera: a.camera,
+            photoUrl: a.photoUrl,
+            minConfidence: a.minConfidence,
+            peopleInFrame: a.peopleInFrame,
+        }));
+
+        this.setActivities({activities});
     }
 
     @Action({rawError: true})

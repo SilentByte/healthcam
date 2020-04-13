@@ -5,7 +5,14 @@
 
 <!--suppress HtmlUnknownTarget -->
 <template>
-    <v-container v-if="activities.length===0"
+    <v-container v-if="pendingActivities"
+                 fill-height>
+        <v-flex class="text-center display-1 align-self-center text--disabled">
+            <v-progress-circular indeterminate
+                                 color="primary" />
+        </v-flex>
+    </v-container>
+    <v-container v-else-if="activities.length===0"
                  fill-height>
         <v-flex class="text-center display-1 align-self-center text--disabled">
             There are no current activities
@@ -22,7 +29,16 @@
                         <v-avatar tile
                                   :size="calculatePreviewSize"
                                   class="ma-2 ma-sm-4">
-                            <v-img :src="activity.photoUrl" />
+                            <v-img :src="activity.photoUrl">
+                                <template v-slot:placeholder>
+                                    <v-row class="fill-height ma-0"
+                                           align="center"
+                                           justify="center">
+                                        <v-progress-circular indeterminate
+                                                             color="primary" />
+                                    </v-row>
+                                </template>
+                            </v-img>
                         </v-avatar>
 
                         <v-layout row>
@@ -32,9 +48,16 @@
                                 </v-card-title>
                                 <v-card-subtitle class="pb-1 caption">
                                     <div>
-                                        <v-icon x-small>mdi-calendar-clock</v-icon>
-                                        {{ activity.timestamp.toLocaleString() }}
+                                        <v-icon small class="mr-1">mdi-calendar-clock</v-icon>
+                                        <span>{{ activity.timestamp.toLocaleString() }}</span>
                                     </div>
+                                    <v-flex>
+                                        <v-icon small class="mr-1">mdi-account-arrow-left</v-icon>
+                                        <span>{{ activity.peopleInFrame }}</span>
+
+                                        <v-icon small class="ml-1">mdi-alpha</v-icon>
+                                        <span>{{ activity.minConfidence.toFixed(2) }}</span>
+                                    </v-flex>
                                 </v-card-subtitle>
                             </v-flex>
                             <v-flex ma-5>
@@ -63,6 +86,7 @@
     </v-container>
 </template>
 
+<!--suppress JSUnusedGlobalSymbols -->
 <script lang="ts">
     import {
         Component,
@@ -79,6 +103,7 @@
 
     @Component
     export default class ActivityLogView extends Vue {
+        pendingActivities = false;
         pendingConfirmations: { [key: string]: boolean } = {};
 
         get activities() {
@@ -117,6 +142,15 @@
                 await app.doConfirmActivity({activityId: activity.id});
             } finally {
                 this.$delete(this.pendingConfirmations, activity.id);
+            }
+        }
+
+        async mounted() {
+            try {
+                this.pendingActivities = true;
+                await app.doFetchActivities();
+            } finally {
+                this.pendingActivities = false;
             }
         }
     }
