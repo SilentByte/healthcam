@@ -69,7 +69,6 @@ export class AppModule extends VuexModule {
     @Action({rawError: true})
     async doFetchActivities() {
         const result = await axios.get(`${process.env.VUE_APP_API_URL}/activities`);
-
         const activities = result.data.map((a: any): IActivity => ({
             id: a.id,
             type: a.type,
@@ -85,9 +84,8 @@ export class AppModule extends VuexModule {
 
     @Action({rawError: true})
     async doConfirmActivity(payload: { activityId: string }) {
-        // TODO: Implement API call.
-        await new Promise(function(resolve) {
-            setTimeout(resolve.bind(null, () => null), 1000);
+        await axios.post(`${process.env.VUE_APP_API_URL}/confirm`, {
+            "activity_id": payload.activityId,
         });
 
         this.deleteActivity({activityId: payload.activityId});
