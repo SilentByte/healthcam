@@ -70,11 +70,25 @@
                                         {{ formatActivityType(activity).text }}
                                     </v-chip>
                                     <v-flex my-5 pt-5 mr-4>
-                                        <v-btn small color="primary"
-                                               :loading="!!pendingConfirmations[activity.id]"
-                                               @click="onConfirmActivity(activity)">
-                                            Confirm
-                                        </v-btn>
+                                        <v-layout column align-center>
+                                            <v-layout row>
+                                                <v-btn icon color="primary"
+                                                       :loading="(pendingRatings[activity.id] || 0) > 0"
+                                                       :disabled="(pendingRatings[activity.id] || 0) < 0"
+                                                       @click="onRateActivity(activity, +1)">
+                                                    <v-icon>mdi-thumb-up</v-icon>
+                                                </v-btn>
+                                                <v-btn icon color="primary"
+                                                       :loading="(pendingRatings[activity.id] || 0) < 0"
+                                                       :disabled="(pendingRatings[activity.id] || 0) > 0"
+                                                       @click="onRateActivity(activity, -1)">
+                                                    <v-icon>mdi-thumb-down</v-icon>
+                                                </v-btn>
+                                            </v-layout>
+                                            <small class="text--disabled">
+                                                Rate Detection
+                                            </small>
+                                        </v-layout>
                                     </v-flex>
                                 </v-layout>
                             </v-flex>
@@ -104,7 +118,7 @@
     @Component
     export default class ActivityLogView extends Vue {
         pendingActivities = false;
-        pendingConfirmations: { [key: string]: boolean } = {};
+        pendingRatings: { [key: string]: boolean } = {};
 
         get activities() {
             return app.activities;
@@ -136,12 +150,15 @@
             }[activity.type];
         }
 
-        async onConfirmActivity(activity: IActivity) {
+        async onRateActivity(activity: IActivity, rating: number) {
             try {
-                this.$set(this.pendingConfirmations, activity.id, true);
-                await app.doConfirmActivity({activityId: activity.id});
+                this.$set(this.pendingRatings, activity.id, rating);
+                await app.doRateActivity({
+                    activityId: activity.id,
+                    rating,
+                });
             } finally {
-                this.$delete(this.pendingConfirmations, activity.id);
+                this.$delete(this.pendingRatings, activity.id);
             }
         }
 

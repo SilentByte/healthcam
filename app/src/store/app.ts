@@ -79,9 +79,10 @@ export class AppModule extends VuexModule {
     }
 
     @Action({rawError: true})
-    async doConfirmActivity(payload: { activityId: string }) {
-        await axios.post(`${process.env.VUE_APP_API_URL}/confirm`, {
+    async doRateActivity(payload: { activityId: string; rating: number }) {
+        await axios.post(`${process.env.VUE_APP_API_URL}/rate`, {
             "activity_id": payload.activityId,
+            rating: payload.rating,
         });
 
         this.deleteActivity({activityId: payload.activityId});
