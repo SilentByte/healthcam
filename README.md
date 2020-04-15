@@ -116,7 +116,7 @@ Currently, the SageMaker model seems to have a limitation in that it doesn't pro
 This hackathon gave us the chance to once again dive into Amazon Web Services. New services for us this time were AWS IoT Greengrass and AWS Amplify, which are now part of our toolbox.
 
 
-## Whats next
+## What's Next
 ### Authentication
 Currently there is no Authentication on the API gateway or website. This is something that's probably required if anyone
 is going to use this, so it would be well worth us putting in the effort to get this in. We would probably want to use
