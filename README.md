@@ -87,7 +87,46 @@ We've written extensive documentation on how to set this up:
 
 ## Lambdas
 
-See [lambda documentation](./app/README.md).
+### Development
+
+*   Create a Python virtual environment and install lambda dependencies:
+    ```bash
+    $ cd lambdas
+    $ virtualenv --python python3 venv
+    $ source venv/bin/activate
+    $ pip install -r requirements.txt
+    $ npm install
+    ```
+
+*   Set lambda environment variables by creating the file `.env.development` with the following variables:
+    ```bash
+    DEBUG=True
+    PRODUCTION=False
+
+    PHOTO_BUCKET_NAME=S3_BUCKET_NAME
+    PHOTO_KEY_PREFIX=healthcam/
+
+    DB_HOST=YOUR_DATABASE_HOST
+    DB_PORT=YOUR_DATABASE_PORT
+    DB_NAME=YOUR_DATABASE_NAME
+    DB_USER=YOUR_DATABASE_USER
+    DB_PASSWORD=YOUR_DATABASE_PASSWORD
+    ```
+
+*   Start lambdas in development mode:
+    ```bash
+    $ npm run dev
+    ```
+
+### Deployment
+
+To deploy the lambdas, follow the steps above and then run:
+
+*   Start lambdas in development mode:
+    ```bash
+    $ npm run deploy
+    ```
+
 
 ## Website
 
