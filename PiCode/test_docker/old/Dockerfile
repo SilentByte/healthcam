@@ -10,8 +10,8 @@ RUN apt-get update && apt-get install python-picamera python3-picamera libopenjp
 RUN pip3 install picamera
 RUN usermod -a -G video root
 ADD test.py test.py
-COPY src src
-COPY requirements.txt requirements.txt
-COPY setup.py setup.py
+COPY ../../src src
+COPY ../../requirements.txt requirements.txt
+COPY ../../setup.py setup.py
 COPY readme.md readme.md
 ENTRYPOINT ["MaskCam", "to_aws"]

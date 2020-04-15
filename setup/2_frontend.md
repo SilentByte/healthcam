@@ -1,3 +1,29 @@
+
+# Create RDS DB
+```
+aws rds create-db-instance 
+--engine postgres \
+--db-instance-identifier PUT_A_NAME_IN_HERE \
+--allocated-storage 20 \
+--db-instance-class db.t2.micro \
+--publicly-accessible 
+--master-username PUT_USERNAME_HERE \
+--master-user-password PUT_PASSWORD_HERE \
+--backup-retention-period 3
+
+```
+Check your database with  ```aws rds describe-db-instances --region us-east-1| grep 'DBInstanceIdentifier":' -A 7``` and wait until the field ```DBInstanceStatus``` becomes "available".
+
+After this you should be able to connect to this publicly accessible data, I suggest [dbeaver](https://dbeaver.io/download/) if you don't already have a favourite SQL tool.
+
+Make sure to record your Endpoint and username/password for later steps
+
+# Create S3 Bucket
+To keep the S3 bucket external to the deployments we've created it separately via the AWS CLI
+```
+aws s3a create-bucket --bucket YOUR_BUCKET_NAME_HERE --region us-east-1
+```
+
 ## Lambdas
 
 ### Development
@@ -15,15 +41,16 @@
     ```bash
     DEBUG=True
     PRODUCTION=False
-
+    # Bucket name and a prefix for the photos
     PHOTO_BUCKET_NAME=S3_BUCKET_NAME
     PHOTO_KEY_PREFIX=healthcam/
-
+    # Database info from your RDS instance
     DB_HOST=YOUR_DATABASE_HOST
     DB_PORT=YOUR_DATABASE_PORT
     DB_NAME=YOUR_DATABASE_NAME
     DB_USER=YOUR_DATABASE_USER
     DB_PASSWORD=YOUR_DATABASE_PASSWORD
+    # Your sagemaker endpoint name created in step 1
     SAGEMAKER_ENDPOINT=
     ```
 
@@ -90,32 +117,7 @@ This project is powered by [AWS Amplify](https://aws-amplify.github.io/) and req
 
 If the deployment has been successful, a publicly accessible URL will be displayed and HealthCam is now up and running. :-)
 
-# Create RDS DB
-```
-aws rds create-db-instance 
---engine postgres \
---db-instance-identifier PUT_A_NAME_IN_HERE \
---allocated-storage 20 \
---db-instance-class db.t2.micro \
---publicly-accessible 
---master-username PUT_USERNAME_HERE \
---master-user-password PUT_PASSWORD_HERE \
---backup-retention-period 3
 
-```
-Check your database with  ```aws rds describe-db-instances --region us-east-1| grep 'DBInstanceIdentifier":' -A 7``` and wait until the field ```DBInstanceStatus``` becomes "available".
-
-After this you should be able to connect to this publicly accessible data, I suggest [dbeaver](https://dbeaver.io/download/) if you don't already have a favourite SQL tool.
-
-Make sure to record your Endpoint and username/password for later steps
-
-# Create S3 Bucket
-
-
-
-
-
-# Serverless deploy
 
 # References 
 [Launch RDS with AWS CLI](https://www.mydatahack.com/how-to-launch-postgres-rds-with-aws-command-line-interface-cli/)

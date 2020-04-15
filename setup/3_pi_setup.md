@@ -1,6 +1,86 @@
-# Setup Docker Compose file
-aws s3 mb s3://some_unique_name_that_you_choose --region us-east-1
+# Set up Pi
+[Download Raspbian Buster lite](https://downloads.raspberrypi.org/raspbian_lite_latest) and extract it
 
+Use [Etcher](https://www.balena.io/etcher/) to install the Rasbpian ISO to your SD Card.
+
+On your SD card go to ```boot``` and add a new file called ```ssh```. This will enable SSH on boot.
+
+
+You should now be able to put your SD card 
+
+Check that your raspberry Pi is online with ```ping raspberrypi.local```
+```
+PING raspberrypi.local (192.168.0.167) 56(84) bytes of data.
+64 bytes from raspberrypi.modem (192.168.0.167): icmp_seq=1 ttl=64 time=0.889 m
+```
+
+SSH into the Raspberry Pi
+
+```
+# Enable GPIO and Camera
+sudo apt-get update
+sudo apt-get install pigpio -y
+sudo raspi-config nonint do_camera 1
+sudo raspi-config nonint do_rgpio 1
+# Install docker
+sudo apt install docker docker-compose -y
+# Setup docker group for current user and green grass user
+sudo adduser -m ggc_user
+sudo addgroup --system ggc_group
+sudo groupadd docker
+sudo usermod -aG docker pi
+sudo usermod -aG docker ggc_user
+# setup opencv (for devel purposes).
+sudo apt install libtiff-dev libjpeg8-dev libpng12-dev build-essential  -y
+sudo apt install python3-pyqt5 libqtgui4 libjasper-dev libatlas-base-dev libatlas-base-dev libgtk2.0-dev libtbb-dev qt5-default -y
+sudo apt install python3-opencv -y
+```
+
+Install the MaskCam package
+```
+git clone git@github.com:SilentByte/healthcam.git
+cd healthcam/Picode
+pip3 install -r requirements.txt
+pip3 install -e .
+```
+You should now be able to run ```MaskCam``` to access settings 
+```zsh
+pi@raspberrypi:~ $ MaskCam --help
+Usage: MaskCam [OPTIONS] COMMAND [ARGS]...
+
+Options:
+  --camera_number INTEGER       Raspberry Pi camera number according to https:
+                                //picamera.readthedocs.io/en/release-1.13/api_
+                                camera.html#picamera, Default: 0
+
+  --camera_invert BOOLEAN       Vertical invert camera, Default: True
+  --device_name TEXT            Device Name, Default: raspberrypi
+  --minimum_difference INTEGER  Minimum difference between frames to send,
+                                Default: 50
+
+  --api_gateway TEXT            AWS API Gateway Endpoint, Default:
+                                https://m5k4jhx1ka.execute-api.us-
+                                east-1.amazonaws.com/dev/
+
+  -v, --verbose                 Verbosity. More v, more verbose. Eg -vvv
+  --door_button INTEGER         Pin that the override button is connected to,
+                                Default: 37
+
+  --door_pin INTEGER            Pin the door latch is connected to, Default:
+                                35
+
+  --opening_time INTEGER        Time to open door in seconds., Default: 5
+  --help                        Show this message and exit.
+
+Commands:
+  to_aws
+  to_file
+  to_stdout
+```
+For most cases if you run ```MaskCam --api_gateway {YOUR GATWAY URL} to_aws``` you should be fine.
+
+
+#Setup Greengrass
 # Setup Roles
 ## Bootstrap Role
 Create the "Bootstrap" role which will install your greengrass components onto your raspberry pi.
@@ -9,11 +89,13 @@ Create the "Bootstrap" role which will install your greengrass components onto y
 get your ARN with ```aws iam get-role --role-name Greengrass_ServiceRole ```
 ```
 aws greengrass associate-service-role-to-account --role-arn {YOUR_ROLE} --region us-east-1
+
+
+```
+Create a "boostrap" user that will be creating your greengrass core deployment
 ```
 aws iam create-user --user-name bootstrapuser
 aws iam create-access-key --user-name bootstrapuser
-
-```
 aws iam attach-user-policy --user-name bootstrapuser --policy-arn arn:aws:iam::aws:policy/AWSGreengrassFullAccess
 aws iam attach-user-policy --user-name bootstrapuser --policy-arn arn:aws:iam::aws:policy/AWSIoTConfigAccess
 aws iam attach-user-policy --user-name bootstrapuser --policy-arn arn:aws:iam::aws:policy/IAMFullAccess
@@ -45,50 +127,10 @@ aws iam create-role --role-name Greengrass_ServiceRole --assume-role-policy-docu
 }'
 aws iam attach-role-policy --role-name Greengrass_ServiceRole --policy-arn arn:aws:iam::aws:policy/service-role/AWSGreengrassResourceAccessRolePolicy
 ```
-
-
-
-
-# Set up Pi
-[Download Raspbian Buster lite](https://downloads.raspberrypi.org/raspbian_lite_latest) and extract it
-
-Use [Etcher](https://www.balena.io/etcher/) to install the Rasbpian ISO to your SD Card.
-
-On your SD card go to ```boot``` and add a new file called ```ssh```. This will enable SSH on boot.
-
-
-You should now be able to put your SD card 
-
-Check that your raspberry Pi is online with ```ping raspberrypi.local```
+Download greengrass setup
 ```
-PING raspberrypi.local (192.168.0.167) 56(84) bytes of data.
-64 bytes from raspberrypi.modem (192.168.0.167): icmp_seq=1 ttl=64 time=0.889 m
-```
-
-SSH into the raSuccessfullyspberry pi
-
-```
-# Enable GPIO and Camera
-sudo apt-get update
-sudo apt-get install pigpio -y
-sudo raspi-config nonint do_camera 1
-sudo raspi-config nonint do_rgpio 1
-# Install docker
-sudo apt install docker docker-compose -y
-# Setup docker group for current user and green grass user
-sudo adduser -m ggc_user
-sudo addgroup --system ggc_group
-sudo groupadd docker
-sudo usermod -aG docker pi
-sudo usermod -aG docker ggc_user
-# setup opencv (for devel purposes).
-sudo apt install python3-pyqt5 libqtgui4 libjasper-dev libatlas-base-dev -y
-sudo apt install python3-opencv -y
-
-# Download greengrass setup
 wget -q -O ./gg-device-setup-latest.sh https://d1onfpft10uf5o.cloudfront.net/greengrass-device-setup/downloads/gg-device-setup-latest.sh && chmod +x ./gg-device-setup-latest.sh
 ```
-
 Input the aws-access-key-id and aws-secret-access-key from ```aws iam create-access-key --user-name bootstrapuser```. This will createa a group-name and core-name with the serial number of your raspberry pi.
 ```
 sudo ./gg-device-setup-latest.sh bootstrap-greengrass \
@@ -114,10 +156,9 @@ yes
 
 ```
 You can now use AWS IoT Console to manage your Greengrass group.
-
 ```
 
-attach the servie role to your docker
+attach the service role to your docker
 
 ```
 aws greengrass list-groups
@@ -152,27 +193,8 @@ aws greengrass create-connector-definition --name MyGreengrassConnectors --initi
         }
     ]
 }'
-
-
-aws greengrass create-deployment --deployment-type NewDeployment --group_id {YOUR_GROUP_ID}
 ```
-get your group version id with ```aws greengrass list-groups --query "reverse(sort_by(Groups, &CreationTimestamp))[0]""```
-using your group version id (shown as ```LatestVersion``) deploy this
-```
-aws greengrass create-deployment \
---deployment-type NewDeployment \
---group-id {YOUR_GROUP_ID}
---group-version-id {YOUR_GROUP_VERSION_ID}
-```
-You should be able to log into your greengrass consol
-
-
-
-You shou
-##TODO
-1. .env file
-2. Preload image
-
+you should now be able to create a new deployment via the AWS console
 
 # References
 [Enable SSH on boot](https://www.raspberrypi.org/forums/viewtopic.php?t=129727)
@@ -182,3 +204,4 @@ You shou
 [Greengrass quick setup](https://docs.aws.amazon.com/greengrass/latest/developerguide/quick-start.html)
 
 [Connector](https://docs.aws.amazon.com/greengrass/latest/developerguide/docker-app-connector.html)
+[Install OpenCV4](https://www.learnopencv.com/install-opencv-4-on-raspberry-pi/)
