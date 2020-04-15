@@ -4,14 +4,24 @@
 -->
 
 <template>
-    <v-container class="pa-5 text-center content">
+    <v-container class="pa-5 text-center content" style="max-width: 900px">
         <h2 class="mb-3 display-2 text-uppercase">
             Here's a <span class="text-primary">Quick</span> Overview
         </h2>
 
         <div class="body-1">
             <p>
-                TODO
+                HealthCam is a system based on the Raspberry Pi Camera and utilizing the <a
+                    href="https://aws.amazon.com/marketplace/pp/prodview-b53upp27dnmzq">PPE Detector for Laboratory
+                Safety</a> model provided by VITech Lab, which provides predictions for whether a person is wearing
+                a mask or not. With this information, the system is able to automatically <strong>restrict
+                door-access</strong> to sterile areas for people not wearing a mask in order to <strong>prevent the
+                spread of infections</strong>.
+            </p>
+            <p>
+                This website serves as the front-end of the system and provides <strong>compliance information</strong>
+                to health administrators and notifies personnel of breaches of health protocol. Detections can be
+                flagged as incorrect to improve future detections.
             </p>
         </div>
 
