@@ -13,7 +13,7 @@
 
 ## About
 
-HealthCam is a system based on the Raspberry Pi Camera and utilizing the [PPE Detector for Laboratory Safety](https://aws.amazon.com/marketplace/pp/prodview-b53upp27dnmzq) model provided by VITech Lab, which provides predictions for whether a person is wearing a mask or not. With this information, the system is able to automatically restrict door-access to sterile areas for people not wearing a mask in order to prevent the spread of infections.
+[HealthCam (healthcam.silentbyte.com)](https://www.healthcam.silentbyte.com/) is a system based on the Raspberry Pi Camera and utilizing the [PPE Detector for Laboratory Safety](https://aws.amazon.com/marketplace/pp/prodview-b53upp27dnmzq) model provided by VITech Lab, which provides predictions for whether a person is wearing a mask or not. With this information, the system is able to automatically restrict door-access to sterile areas for people not wearing a mask in order to prevent the spread of infections.
 
 Our submission contains two major components: the actual Raspberry Pi Camera with a door lock and the accompanying website to give
 administrators access to manually flag detections as incorrect, and to view history of compliance, violation and manual
@@ -32,13 +32,12 @@ override events.
 | RDS                          | Hosting of a PostgresSQL database          |
 | IAM                          | Management of AWS Permissions              |
 | Sagemaker Models Marketplace | Model for Mask detection                   |
+
 ![](docs/AWSDiagram.png)
 
 
 ### Website
-The website is powered by AWS Amplify, with all API calls made to AWS API Gateway. This website was used to give administrators
-the ability to manually flag detections as incorrect and view a history of compliance, violation and manual
-override events.
+The website is powered by AWS Amplify and Vue/Vuetify, with all API calls made to AWS API Gateway. This website gives administrators the ability to manually flag detections as incorrect and view a history of compliance, violation and manual override events.
 
 ![](docs/activitylog.png)
 
