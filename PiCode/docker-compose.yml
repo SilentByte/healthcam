@@ -1,0 +1,7 @@
+version: '3'
+services:
+  image:"foo_bar_baz:latest"
+devices:
+  - "/dev/gpiomem:/dev/gpiomem"
+env_file:
+  - /home/ggc_user/.env

@@ -1,0 +1,9 @@
+RPI.GPIO==0.7.0
+picamera
+picamera[array]
+opencv-contrib-python==4.1.0.25
+attentive
+knobs
+pytz
+click
+Pillow
