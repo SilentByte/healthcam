@@ -131,7 +131,7 @@ One of the things that slowed us down a bit was the lack of a proper deployment 
 
 ![](docs/devops.png)
 
-We would probably want to implement proper Continous Integration/Continous Deployment to avoid us
+We would probably want to implement proper Continuous Integration/Continuous Deployment to avoid us
 having to push code manually and to make sure that we have some automated tests running against our code once deployed to AWS.
 
 ### Proper Bootstrap Script for Raspberry Pi
