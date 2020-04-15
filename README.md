@@ -49,8 +49,7 @@ A lambda function then picks this up, and first queries a Sagemaker endpoint cre
 The endpoint then returns information about the number of people in frame, the probability that each item is a person,
 and the probability that they're wearing a mask. If there are people in the frame, then we take the lowest mask detected
 probability, compare it to a user defined minimum probability to determine whether it's complient or not and upload image
-to a S3 bucket, a reference to where that image is along with the probability and # people in frame to a RDS instance.
-Finally the Lambda sends a response back for whether the door should be opened or not.
+to a S3 bucket, a reference to where that image is along with the probability and number of people in frame to an RDS instance. Finally the Lambda sends a response back for whether the door should be opened or not. We have implemented a manual override button to open the door for emergency situations and in case of a false detection to guarantee that health works can continue to operate effectively and efficiently.
 
 ### Raspberry Pi
 ![](docs/Connections.png)
@@ -65,7 +64,7 @@ whether everyone in frame is wearing a mask.
 If they are wearing a mask, then the Raspberry Pi Turns a GPIO pin connected to a relay to HIGH, which will actuate the
 locking mechanism.
 
-In the event of an emergency, there is a manual override button which will trigger an interrupt, immediately opening the
+In the event of an emergency or false detection, there is a manual override button which will trigger an interrupt, immediately opening the
 door, recording a picture and tagging the event as "override".
 
 
@@ -81,20 +80,63 @@ door, recording a picture and tagging the event as "override".
 | [Button](https://www.ebay.com.au/itm/10pcs-6x6x4-9mm-4pin-G89-Tactile-Push-Button-Micro-Switch-Self-Reset-Dip-Press/132693965284)                | Press button for manual override of system |
 | [10KΩ Resistor](https://www.ebay.com.au/itm/10pcs-1-4-Watt-0-25W-Metal-Film-Resistors-1-Full-Range-of-Values-0-to-10M/192581889373)              | Pull down resistor for button              |
 
+
 ## Setup
-We've written extensive documentation on how to set this up.
-The repo is split into:
+
+We've written extensive documentation on how to set this up:
 
 ## Lambdas
 
+See [lambda documentation](./app/README.md).
+
 ## Website
 
-## Amplify
+### Development
 
-[1. Setup AWS CLI]
-[2. Setup Model Endpoint]
-[3. Setup FrontEnd]
-[4. Setup Raspberry Pi]
+In order to start development on this project, follow the steps below:
+
+*   Ensure that the AWS Lambda-based back-end service is running locally on port 8888.
+
+*   Install app dependencies:
+    ```bash
+    $ cd app
+    $ npm install
+    ```
+
+*   Start app in development mode:
+    ```bash
+    $ npm run dev
+    ```
+
+    At this point, the app should have been bundled and a development server should have been started on port 8080.
+
+
+### Deployment
+
+This project is powered by [AWS Amplify](https://aws-amplify.github.io/) and requires you to sign up for an AWS account if you choose to deploy using that service.
+
+*   Ensure that the AWS Lambda-based back-end has been deployed.
+
+*   Create the file `.env.development.local` in the `./app/` folder and set the endpoint URL to the base URL to which the Lambda service has been deployed:
+
+    ```
+    VUE_APP_API_URL=https://your-lambda-url.execute-api.us-east-1.amazonaws.com/dev
+    ```
+
+*   Configure your AWS Amplify project:
+    ```bash
+    $ cd app
+    $ npm install -g @aws-amplify/cli
+    $ amplify configure
+    ```
+
+*   Publish the HealthCam app on AWS Amplify:
+    ```bash
+    $ amplify publish
+    ```
+
+If the deployment has been successful, a publicly accessible URL will be displayed and HealthCam is now up and running. :-)
+
 
 ## Challenges we ran into
 
@@ -137,8 +179,11 @@ Because we used two different frameworks (Serverless Framework and AWS Amplify) 
 Ideally we'd fully embrace Infrastructure as a Service and use Cloudformation to manage all of our cloud resources.
 
 ### Proper Deployment Pipleine (CICD)
-One of the things that slowed us down a bit was a lack of a proper deployment pipeline which occasionally slowed us down
-![](docs/devops.png). We would probably want to implement proper Continous Integration/Continous Deployment to avoid us
+One of the things that slowed us down a bit was the lack of a proper deployment pipeline which occasionally slowed us down:
+
+![](docs/devops.png)
+
+We would probably want to implement proper Continous Integration/Continous Deployment to avoid us
 having to push code manually and to make sure that we have some automated tests running against our code once deployed to AWS.
 
 ### Proper Bootstrap Script for Raspberry Pi
