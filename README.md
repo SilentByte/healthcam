@@ -8,19 +8,14 @@
 
 # HealthCam
 
-![PLACEHOLDER FOR ACTUAL IMAGE OF COMPONENTS](https://i.pinimg.com/474x/c8/11/79/c8117980cbce318cf809ec5a42eb75da.jpg)
-
-
-## About
-
-[HealthCam (healthcam.silentbyte.com)](https://www.healthcam.silentbyte.com/) is a system based on the Raspberry Pi Camera and utilizing the [PPE Detector for Laboratory Safety](https://aws.amazon.com/marketplace/pp/prodview-b53upp27dnmzq) model provided by VITech Lab, which provides predictions for whether a person is wearing a mask or not. With this information, the system is able to automatically restrict door-access to sterile areas for people not wearing a mask in order to prevent the spread of infections.
+In an effort to help with the currently ongoing COVID-19 health crisis, we have developed [HealthCam (healthcam.silentbyte.com)](https://www.healthcam.silentbyte.com/), a system based on the Raspberry Pi Camera and utilizing the [PPE Detector for Laboratory Safety](https://aws.amazon.com/marketplace/pp/prodview-b53upp27dnmzq) model provided by VITech Lab, which provides predictions for whether a person is wearing a mask or not. With this information, the system is able to automatically restrict door-access to sterile areas for people not wearing a mask in order to prevent the spread of infections.
 
 Our submission contains two major components: the actual Raspberry Pi Camera with a door lock and the accompanying website to give
 administrators access to manually flag detections as incorrect, and to view history of compliance, violation and manual
 override events.
 
 
-### AWS Services Used
+## AWS Services Used
 
 | Service                      | Usage                                      |
 |------------------------------|--------------------------------------------|
@@ -36,7 +31,7 @@ override events.
 ![](docs/AWSDiagram.png)
 
 
-### Website
+## Website
 The website is powered by AWS Amplify and Vue/Vuetify, with all API calls made to AWS API Gateway. This website gives administrators the ability to manually flag detections as incorrect and view a history of compliance, violation and manual override events.
 
 ![](docs/activitylog.png)
@@ -51,7 +46,7 @@ and the probability that they're wearing a mask. If there are people in the fram
 probability, compare it to a user defined minimum probability to determine whether it's compliant or not and upload image
 to a S3 bucket, a reference to where that image is along with the probability and number of people in frame to an RDS instance. Finally the Lambda sends a response back for whether the door should be opened or not. We have implemented a manual override button to open the door for emergency situations and in case of a false detection to guarantee that health works can continue to operate effectively and efficiently.
 
-### Raspberry Pi
+## Raspberry Pi
 ![](docs/Connections.png)
 
 The Raspberry Pi system runs AWS Greengrass core. This allows the remote pushing of code and configurations through the AWS Greengrass Docker connector.
@@ -68,7 +63,7 @@ In the event of an emergency or false detection, there is a manual override butt
 door, recording a picture and tagging the event as "override".
 
 
-## Bill of Materials
+### Bill of Materials
 | Item                                                                                                                                             | Description                                |
 | -------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------|
 | [USB-C 5V 3A Power Supply](https://www.ebay.com.au/itm/Raspberry-Pi-4-4B-Power-Supply-Adapter-ON-OFF-Switch-USB-C-5V-3A-US-EU-Plug/303278828464) | Power for the Raspberry Pi                 |
@@ -84,9 +79,12 @@ door, recording a picture and tagging the event as "override".
 ## Setup
 
 We've written extensive documentation on how to setup the aws resources and raspberry pi requirements to run this.
-[1. Create Sagemaker Endpoint](setup/1_create_endpoint.md)
-[2. Setup Frontend](setup/2_frontend.md)
-[3. Setup Pi](setup/3_pi_setup.md)
+
+1. [Create Sagemaker Endpoint](setup/1_create_endpoint.md)
+
+2. [Setup Frontend](setup/2_frontend.md)
+
+3. [Setup Pi](setup/3_pi_setup.md)
 
 
 ## Challenges we ran into
