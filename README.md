@@ -48,14 +48,14 @@ A lambda function then picks this up, and first queries a Sagemaker endpoint cre
 [PPE Detector for Laboratory Safety](https://aws.amazon.com/marketplace/pp/prodview-b53upp27dnmzq).
 The endpoint then returns information about the number of people in frame, the probability that each item is a person,
 and the probability that they're wearing a mask. If there are people in the frame, then we take the lowest mask detected
-probability, compare it to a user defined minimum probability to determine whether it's complient or not and upload image
+probability, compare it to a user defined minimum probability to determine whether it's compliant or not and upload image
 to a S3 bucket, a reference to where that image is along with the probability and number of people in frame to an RDS instance. Finally the Lambda sends a response back for whether the door should be opened or not. We have implemented a manual override button to open the door for emergency situations and in case of a false detection to guarantee that health works can continue to operate effectively and efficiently.
 
 ### Raspberry Pi
 ![](docs/Connections.png)
 
 The Raspberry Pi system runs AWS Greengrass core. This allows the remote pushing of code and configurations through the AWS Greengrass Docker connector.
-The code inside the Docker container that gets deployed continually monitors for a percentage of pixels that have changed
+The main "Program" is installed as a python package and continually monitors for a percentage of pixels that have changed
 by some user defined percentage. If this threshold has exceded then it will send the image it has captured through to
 an AWS API Gateway endpoint, which will then do analysis on the image using the
 [PPE Detector for Laboratory Safety](https://aws.amazon.com/marketplace/pp/prodview-b53upp27dnmzq) model, to determine
@@ -83,98 +83,10 @@ door, recording a picture and tagging the event as "override".
 
 ## Setup
 
-We've written extensive documentation on how to set this up:
-
-## Lambdas
-
-### Development
-
-*   Create a Python virtual environment and install lambda dependencies:
-    ```bash
-    $ cd lambdas
-    $ virtualenv --python python3 venv
-    $ source venv/bin/activate
-    $ pip install -r requirements.txt
-    $ npm install
-    ```
-
-*   Set lambda environment variables by creating the file `.env.development` with the following variables:
-    ```bash
-    DEBUG=True
-    PRODUCTION=False
-
-    PHOTO_BUCKET_NAME=S3_BUCKET_NAME
-    PHOTO_KEY_PREFIX=healthcam/
-
-    DB_HOST=YOUR_DATABASE_HOST
-    DB_PORT=YOUR_DATABASE_PORT
-    DB_NAME=YOUR_DATABASE_NAME
-    DB_USER=YOUR_DATABASE_USER
-    DB_PASSWORD=YOUR_DATABASE_PASSWORD
-    ```
-
-*   Start lambdas in development mode:
-    ```bash
-    $ npm run dev
-    ```
-
-### Deployment
-
-To deploy the lambdas, follow the steps above and then run:
-
-*   Start lambdas in development mode:
-    ```bash
-    $ npm run deploy
-    ```
-
-
-## Website
-
-### Development
-
-In order to start development on this project, follow the steps below:
-
-*   Ensure that the AWS Lambda-based back-end service is running locally on port 8888.
-
-*   Install app dependencies:
-    ```bash
-    $ cd app
-    $ npm install
-    ```
-
-*   Start app in development mode:
-    ```bash
-    $ npm run dev
-    ```
-
-    At this point, the app should have been bundled and a development server should have been started on port 8080.
-
-
-### Deployment
-
-This project is powered by [AWS Amplify](https://aws-amplify.github.io/) and requires you to sign up for an AWS account if you choose to deploy using that service.
-
-*   Ensure that the AWS Lambda-based back-end has been deployed.
-
-*   Create the file `.env.development.local` in the `./app/` folder and set the endpoint URL to the base URL to which the Lambda service has been deployed:
-
-    ```
-    VUE_APP_API_URL=https://your-lambda-url.execute-api.us-east-1.amazonaws.com/dev
-    ```
-
-*   Configure your AWS Amplify project:
-    ```bash
-    $ cd app
-    $ npm install -g @aws-amplify/cli
-    $ amplify configure
-    ```
-
-*   Publish the HealthCam app on AWS Amplify:
-    ```bash
-    $ amplify publish
-    ```
-
-If the deployment has been successful, a publicly accessible URL will be displayed and HealthCam is now up and running. :-)
+We've written extensive documentation on how to setup the aws resources and raspberry pi requirements to run this.
+[1. Create Sagemaker Endpoint](setup/1_create_endpoint.md)
+[2. Setup Frontend](setup/2_frontend.md)
+[3. Setup Pi](setup/3_pi_setup.md)
 
 
 ## Challenges we ran into
@@ -184,6 +96,7 @@ We wanted to drive our development and infrastructure without having to click th
 how to better use the CLI and AWS SDKs. Because we hadn't used much Greengrass in the past it took us a while to properly
 setup a Greengrass core and drive deployments without using the AWS UI. We'd recommend checking out this
 [article](https://devopstar.com/2019/10/07/aws-iot-greengrass-cloudformation-raspberry-pi) if you're attempting greengrass and Raspberry Pi.
+Unfortunately due to time constraints and last minute changes, one of the dependencies we introduced didn't work well with our docker container, so we had to deploy via Pip instead.
 
 ### IAM
 We don't work with AWS a lot and we wanted to avoid our bad behaviours of the past with allow *, so learning how to properly apply the required AWS policies to roles specific to their task was an interesting experience. We've identified a lot of cases where we could have done a lot better, so hopefully we'll fix those up.
