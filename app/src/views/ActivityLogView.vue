@@ -5,14 +5,14 @@
 
 <!--suppress HtmlUnknownTarget -->
 <template>
-    <v-container v-if="activitiesPending"
+    <v-container v-if="activitiesPending && activities.length === 0"
                  fill-height>
         <v-flex class="text-center display-1 align-self-center text--disabled">
             <v-progress-circular indeterminate
                                  color="primary" />
         </v-flex>
     </v-container>
-    <v-container v-else-if="activities.length===0"
+    <v-container v-else-if="activities.length === 0"
                  fill-height>
         <v-flex class="text-center display-1 align-self-center text--disabled">
             There are no current activities

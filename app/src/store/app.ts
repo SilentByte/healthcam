@@ -48,8 +48,13 @@ export class AppModule extends VuexModule {
     }
 
     @Mutation
-    setActivities(payload: { activities: IActivity[] }) {
-        this.activities = payload.activities;
+    mergeActivities(payload: { activities: IActivity[] }) {
+        const map: { [key: string]: IActivity } = {};
+
+        this.activities.forEach(a => map[a.id]  = a)
+        payload.activities.forEach(a => map[a.id] = a)
+
+        this.activities = Object.values(map);
         this.activities.sort((lhs, rhs) => rhs.timestamp.getTime() - lhs.timestamp.getTime());
     }
 
@@ -85,7 +90,7 @@ export class AppModule extends VuexModule {
                 peopleInFrame: a.peopleInFrame,
             }));
 
-            this.setActivities({activities});
+            this.mergeActivities({activities});
         } finally {
             this.setActivitiesPending({pending: false});
         }
