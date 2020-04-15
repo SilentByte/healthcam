@@ -129,6 +129,7 @@
     @Component
     export default class App extends Vue {
         drawer = null;
+        refreshInterval = 0;
 
         get hasViolation() {
             return app.hasViolation;
@@ -144,6 +145,11 @@
 
         mounted() {
             this.onRefreshActivities();
+            this.refreshInterval = setInterval(() => this.onRefreshActivities(), 1000 * 20);
+        }
+
+        destroyed() {
+            clearInterval(this.refreshInterval);
         }
     }
 </script>
