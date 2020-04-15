@@ -49,6 +49,7 @@ export class AppModule extends VuexModule {
     @Mutation
     setActivities(payload: { activities: IActivity[] }) {
         this.activities = payload.activities;
+        this.activities.sort((lhs, rhs) => rhs.timestamp.getTime() - lhs.timestamp.getTime());
     }
 
     @Mutation
