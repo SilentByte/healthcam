@@ -33,6 +33,7 @@ function cameraStateFromPingTimestamp(timestamp: Date): CameraState {
 })
 export class AppModule extends VuexModule {
     activities: IActivity[] = [];
+    activitiesPending = false;
 
     cameras: ICamera[] = [];
 
@@ -53,6 +54,11 @@ export class AppModule extends VuexModule {
     }
 
     @Mutation
+    setActivitiesPending(payload: { pending: boolean }) {
+        this.activitiesPending = payload.pending;
+    }
+
+    @Mutation
     deleteActivity(payload: { activityId: string }) {
         this.activities = this.activities.filter(a => a.id !== payload.activityId);
     }
@@ -65,18 +71,24 @@ export class AppModule extends VuexModule {
 
     @Action({rawError: true})
     async doFetchActivities() {
-        const result = await axios.get(`${process.env.VUE_APP_API_URL}/activities`);
-        const activities = result.data.map((a: any): IActivity => ({
-            id: a.id,
-            type: a.type,
-            timestamp: new Date(a.timestamp),
-            camera: a.camera,
-            photoUrl: a.photoUrl,
-            minConfidence: a.minConfidence,
-            peopleInFrame: a.peopleInFrame,
-        }));
+        try {
+            this.setActivitiesPending({pending: true});
 
-        this.setActivities({activities});
+            const result = await axios.get(`${process.env.VUE_APP_API_URL}/activities`);
+            const activities = result.data.map((a: any): IActivity => ({
+                id: a.id,
+                type: a.type,
+                timestamp: new Date(a.timestamp),
+                camera: a.camera,
+                photoUrl: a.photoUrl,
+                minConfidence: a.minConfidence,
+                peopleInFrame: a.peopleInFrame,
+            }));
+
+            this.setActivities({activities});
+        } finally {
+            this.setActivitiesPending({pending: false});
+        }
     }
 
     @Action({rawError: true})

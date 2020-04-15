@@ -25,6 +25,12 @@
 
             <v-spacer />
 
+            <v-btn icon class="mr-2"
+                   :loading="activitiesPending"
+                   @click="onRefreshActivities">
+                <v-icon large>mdi-cloud-refresh</v-icon>
+            </v-btn>
+
             <v-btn large rounded text :to="{ name: 'ActivityLogView.vue' }">
                 <template v-if="!hasViolation">
                     <v-icon class="pl-4 pr-2" left large>mdi-check</v-icon>
@@ -126,6 +132,18 @@
 
         get hasViolation() {
             return app.hasViolation;
+        }
+
+        get activitiesPending() {
+            return app.activitiesPending;
+        }
+
+        onRefreshActivities() {
+            app.doFetchActivities();
+        }
+
+        mounted() {
+            this.onRefreshActivities();
         }
     }
 </script>

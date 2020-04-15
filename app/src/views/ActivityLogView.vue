@@ -5,7 +5,7 @@
 
 <!--suppress HtmlUnknownTarget -->
 <template>
-    <v-container v-if="pendingActivities"
+    <v-container v-if="activitiesPending"
                  fill-height>
         <v-flex class="text-center display-1 align-self-center text--disabled">
             <v-progress-circular indeterminate
@@ -117,11 +117,14 @@
 
     @Component
     export default class ActivityLogView extends Vue {
-        pendingActivities = false;
         pendingRatings: { [key: string]: boolean } = {};
 
         get activities() {
             return app.activities;
+        }
+
+        get activitiesPending() {
+            return app.activitiesPending
         }
 
         get calculatePreviewSize() {
@@ -159,15 +162,6 @@
                 });
             } finally {
                 this.$delete(this.pendingRatings, activity.id);
-            }
-        }
-
-        async mounted() {
-            try {
-                this.pendingActivities = true;
-                await app.doFetchActivities();
-            } finally {
-                this.pendingActivities = false;
             }
         }
     }
