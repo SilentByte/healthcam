@@ -182,13 +182,11 @@ If the deployment has been successful, a publicly accessible URL will be display
 ### GreenGrass Setup
 We wanted to drive our development and infrastructure without having to click through into the AWS UI to try to learn
 how to better use the CLI and AWS SDKs. Because we hadn't used much Greengrass in the past it took us a while to properly
-setup a greengrass core and drive deployments without using the AWS UI. We'd recommend checking out this
+setup a Greengrass core and drive deployments without using the AWS UI. We'd recommend checking out this
 [article](https://devopstar.com/2019/10/07/aws-iot-greengrass-cloudformation-raspberry-pi) if you're attempting greengrass and Raspberry Pi.
 
 ### IAM
-We don't work with AWS a lot and we wanted to avoid our bad behaviours of the past with allow *, so learning how to properly
-apply the required AWS policies to roles specific to their task was an interesting experience. We've identified a lot of
-cases where we could have done a lot better, so hopefully we'll fix those up.
+We don't work with AWS a lot and we wanted to avoid our bad behaviours of the past with allow *, so learning how to properly apply the required AWS policies to roles specific to their task was an interesting experience. We've identified a lot of cases where we could have done a lot better, so hopefully we'll fix those up.
 
 ### OpenCV and Raspberry Pi
 Some changes to OpenCV (used for detecting image differences) in November broke a few packages. Thankfully
@@ -196,15 +194,15 @@ Some changes to OpenCV (used for detecting image differences) in November broke 
 has updated his blog with steps around this. In retrospect given the problems we had, it would probably have been worth
 doing the pixel change detection in numpy instead of using such a heavy library to do it for us.
 
-
 ### Models Limitations
-We learnt very late in the hackathon that the model has a slight limitation that it doesn't do very will with non
-white/blueish coloured masks.
+Currently, the SageMaker model seems to have a limitation in that it doesn't properly detect non-white/blue masks.
+
 ![](docs/attempts.png)
 
-## What we learnt
 
-### RICO PLS
+## What We Learnt
+
+This hackathon gave us the chance to once again dive into Amazon Web Services. New services for us this time were AWS IoT Greengrass and AWS Amplify, which are now part of our toolbox.
 
 
 ## Whats next
