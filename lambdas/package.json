@@ -19,7 +19,7 @@
   },
   "homepage": "",
   "devDependencies": {
-    "serverless": "^1.65.0",
+    "serverless": "^3.25.1",
     "serverless-dotenv-plugin": "^2.3.2",
     "serverless-offline": "^5.12.1",
     "serverless-python-requirements": "^5.1.0"
